@@ -28,7 +28,7 @@ public class ProducerDemo {
             //Create the producer record
 
             String key="id"+Integer.toString(i);
-            ProducerRecord<String,String> record=new ProducerRecord<String,String>("first_topic",key,"Heylo World"+i);
+            ProducerRecord<String,String> record=new ProducerRecord<String,String>("first_topic",key,"   YOLO World"+i);
 
             loggerFactory.info("key"+key);
             //send data
