@@ -1,12 +1,14 @@
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 public class ProducerDemo {
     public static void main(String[] args) {
+
+        Logger loggerFactory=LoggerFactory.getLogger(ProducerDemo.class);
         //Set the producer
         Properties properties=new Properties();
 
@@ -24,9 +26,29 @@ public class ProducerDemo {
 
 
         //send data
-        producer.send(record);
+        producer.send(record, new Callback() {
+            @Override
+            public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                //executes everytime a record is successfully sent or an exception is throw
+                if(e==null){
+                    loggerFactory.info("Received new metadata Topic "+
+                    recordMetadata.topic()+ "\n"+
+                                    "Partition "+ recordMetadata.partition() +"\n"
+                    +" Offset"+recordMetadata.offset()+ "\n"+
+                            "TimeStamp"+recordMetadata.timestamp()
+                    );
+                }   else {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
 
         producer.flush();
+
+
+
 
     }
 }
